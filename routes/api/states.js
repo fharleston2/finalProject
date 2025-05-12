@@ -9,7 +9,7 @@ router.route('/')
     //.put(verifyRoles(ROLES_LIST.Admin, ROLES_LIST.Editor), employeesController.updateEmployee)
    // .delete(verifyRoles(ROLES_LIST.Admin), employeesController.deleteEmployee);
 
-//router.route('/:state')
-//   .get(employeesController.getEmployee);
+router.route('/:state')
+   .get(statesController.getState);
 
 module.exports = router;
