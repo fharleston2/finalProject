@@ -8,6 +8,9 @@
     "start": "node server",
     "dev": "nodemon server"
   },
+  "engines":{
+    "node": "^16.0.0"
+  },
   "author": "Frank Harleston",
   "license": "ISC",
   "dependencies": {
