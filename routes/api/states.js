@@ -23,11 +23,12 @@ router.route('/')
    .get(statesController.getContigStates); */
 
 
-   
-
+   router.route('/:state/capital')
+    .get(statesController.getStateCapital);
 
 router.route('/:state')
    .get(statesController.getState);
+
 
 
 

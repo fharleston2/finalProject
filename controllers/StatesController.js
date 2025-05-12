@@ -35,10 +35,22 @@ const getState = (req, res) => {
         res.json(nonContigStates);
     }   
 
+    const getStateCapital = (req, res) => {
+        const stateCode = req.params.state.toUpperCase();
+        const state = data.states.find(state => state.code.toUpperCase() === stateCode);
+        if (!state) {
+            return res.status(404).json({ message: 'Invalid state abbreviation parameter' });
+        }
+        res.json({ 
+            state: state.state,
+            capital: state.capital_city });
+    }
+
 
     module.exports ={
         getAllStates,
         getState,
         getContigStates,
-        getNonContigStates
+        getNonContigStates,
+        getStateCapital
     }
