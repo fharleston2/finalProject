@@ -104,8 +104,11 @@ const createStateFunFact = async (req, res) => {
     console.log(typeof funFact);
     console.log(funFact);
 
-    if (!funFact || !Array.isArray(funFact)) {
-        return res.status(400).json({ message: 'State fun facts must be an array' });
+    if (!funFact) {
+        return res.status(400).json({ message: 'State fun facts value required' });
+    }
+    if (!Array.isArray(funFact)) {
+        return res.status(400).json({ message: 'State fun facts value must be an array' });
     }
     
     const state = await State.findOne({ code: stateCode }).exec();
@@ -115,7 +118,12 @@ const createStateFunFact = async (req, res) => {
              funfacts: funFact 
             });
         console.log('State created successfully');
-        res.status(201).json({ newState });
+        await newState.save();
+        res.status(201).json({ 
+            _id: state._id,
+            stateCode: state.code,
+            funfacts: state.funfacts,
+            __v: state.__v });
     }
     else {
         for (let i of funFact) {
@@ -126,7 +134,11 @@ const createStateFunFact = async (req, res) => {
         //state.funfact.push(funFact);
         await state.save();
         console.log('Fun fact added successfully');
-        res.status(201).json({ state });
+        res.status(201).json({ 
+            _id: state._id,
+            stateCode: state.code,
+            funfacts: state.funfacts,
+             __v: state.__v });
     }
     
 
