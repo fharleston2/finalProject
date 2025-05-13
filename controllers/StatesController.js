@@ -16,23 +16,22 @@ const getAllStates = async (req, res) => {
         for (let i of data.states) {
             for (let j of statesMongo) {
                 if (i.code === j.code) {
-                    let stateWithFunFact = {
+                   let stateWithFunFact = {
                         ...i,
                         funfacts: j.funfacts
                     }
     
          result.push(stateWithFunFact); 
          match = true;   
-                } else {
-                    match = false;
-                }     
+                }      
                       
             }
-            if (!match) {
+            if (match === false) {
             result.push(i);}
+            match = false;
             
         }
-    console.log(result.length);
+    console.log("getAllStates");
         res.json(result);
 }
 
@@ -47,6 +46,7 @@ const getState = async (req, res) => {
         }
         const stateMongo = await State.findOne({ code: stateCode }).exec();
         if (!stateMongo) {
+            console.log("getState without fun fact");
             return res.json(state);
         }else {
         const stateFunFact = stateMongo.funfacts;
@@ -54,6 +54,7 @@ const getState = async (req, res) => {
             ...state,
             funfacts: stateFunFact
         }   
+        console.log("getState with fun fact");
         res.json(stateWithFunFact);
     }
 
@@ -70,6 +71,7 @@ const getState = async (req, res) => {
             if (state.funfacts.length === 0) {
                 return res.status(404).json({ message: 'No fun facts found for this state' });
             }
+            console.log("getStateFunFact");
             res.json({ 
                 
                 funfacts: state.funfacts });
@@ -184,7 +186,7 @@ const updateStateFunFact = async (req, res) => {
     const funFact = req.body.funfact;
     let index = req.body.index;
     index = index - 1;
-    console.log(index);
+    console.log(index + "update");
     if (!index) {
         return res.status(400).json({ message: 'State fun fact index value required' });
     }
@@ -215,6 +217,7 @@ const deleteStateFunFact = async (req, res) => {
     const stateCode = req.params.state.toUpperCase(); 
     let index = req.body.index;
     index = index - 1;
+    console.log(index + " of delete");
     if (!index) {
         return res.status(400).json({ message: 'State fun fact index value required' });
     }
