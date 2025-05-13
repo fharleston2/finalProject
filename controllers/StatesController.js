@@ -110,9 +110,7 @@ const getStateAdmission = (req, res) => {
 const createStateFunFact = async (req, res) => {
     const stateCode = req.params.state.toUpperCase();
     const funFact = req.body.funfacts;
-    console.log((Array.isArray(funFact)));
-    console.log(typeof funFact);
-    console.log(funFact);
+  
 
     if (!funFact) {
         return res.status(400).json({ message: 'State fun facts value required' });
@@ -129,7 +127,7 @@ const createStateFunFact = async (req, res) => {
             });
         console.log('State created successfully');
         await newState.save();
-        return res.status(200).json({ 
+        res.status(200).json({ 
             _id: state._id,
             stateCode: state.code,
             funfacts: state.funfacts,
@@ -144,7 +142,7 @@ const createStateFunFact = async (req, res) => {
         //state.funfact.push(funFact);
         await state.save();
         console.log('Fun fact added successfully');
-        return res.status(200).json({ 
+        res.status(200).json({ 
             _id: state._id,
             stateCode: state.code,
             funfacts: state.funfacts,
@@ -157,8 +155,32 @@ const createStateFunFact = async (req, res) => {
     
 }
 
+const updateStateFunFact = async (req, res) => {
+    const stateCode = req.params.state.toUpperCase();
+    const funFact = req.body.funfact;
+    const index = req.body.index - 1;
+    if (!index) {
+        return res.status(400).json({ message: 'State fun fact index value required' });
+    }
+    if (!funFact || !isString(funFact)) {
+        return res.status(400).json({ message: 'State fun fact value required' });
+    }
+    const state = await State.findOne({ code: stateCode }).exec();
+    if (!state) {
+        return res.status(404).json({ message: 'Invalid state abbreviation parameter' });
+    }
+    if (!state.funfacts) {
+        return res.status(404).json({ message: 'No Fun Facts found for ' + state.state});
+    }
+    if (index < 0 || index >= state.funfacts.length || !state.funfacts[index]) {
+        return res.status(404).json({ message: 'No Fun Fact found at the index for ' + state.state});
+    }
+    state.funfacts[index] = funFact;
+    await state.save();
+    res.status(200).json(state);
+
    
-//}
+}
 
     module.exports ={
         getAllStates,
@@ -170,5 +192,6 @@ const createStateFunFact = async (req, res) => {
         getStatePopulation,
         getStateAdmission,
         createStateFunFact,
-        getStateFunFact
+        getStateFunFact,
+        updateStateFunFact
     }

@@ -26,7 +26,7 @@ router.route('/')
 router.route('/:state/funfact')
     .get(statesController.getStateFunFact)
     .post(statesController.createStateFunFact)
-    //.put(statesController.updateStateFunFact)
+    .patch(statesController.updateStateFunFact)
    // .delete(statesController.deleteStateFunFact);
 
 
