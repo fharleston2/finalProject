@@ -186,7 +186,7 @@ const updateStateFunFact = async (req, res) => {
     const funFact = req.body.funfact;
     let index = req.body.index;
     index = index - 1;
-    console.log(index + "update");
+    console.log("updating " + index + " of stateCode: " + stateCode + " with fun fact: " + funFact);
     if (!index) {
         return res.status(400).json({ message: 'State fun fact index value required' });
     }
@@ -199,7 +199,7 @@ const updateStateFunFact = async (req, res) => {
         return res.status(404).json({ message: 'No Fun Facts found for ' + stateLocal.state});
     }
     
-    if (index < 0 || index >= state.funfacts.length || !state.funfacts[index]) {
+    if (index < 0 || index >= state.funfacts.length) {
         const stateLocal = data.states.find(state => state.code.toUpperCase() === stateCode);
         return res.status(404).json({ message: 'No Fun Fact found at the index for ' + stateLocal.state});
     }
