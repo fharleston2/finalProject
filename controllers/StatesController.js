@@ -179,22 +179,25 @@ const createStateFunFact = async (req, res) => {
 const updateStateFunFact = async (req, res) => {
     const stateCode = req.params.state.toUpperCase();
     const funFact = req.body.funfact;
-    const index = req.body.index - 1;
+    let index = req.body.index;
+    console.log(index);
     if (!index) {
         return res.status(400).json({ message: 'State fun fact index value required' });
     }
-    if (!funFact || !isString(funFact)) {
+    if (!funFact || !(typeof funFact == "string")) {
         return res.status(400).json({ message: 'State fun fact value required' });
     }
     const state = await State.findOne({ code: stateCode }).exec();
     if (!state) {
-        return res.status(404).json({ message: 'Invalid state abbreviation parameter' });
+        const stateLocal = data.states.find(state => state.code.toUpperCase() === stateCode);
+        return res.status(404).json({ message: 'No Fun Facts found for ' + stateLocal.state});
     }
     if (!state.funfacts) {
         return res.status(404).json({ message: 'No Fun Facts found for ' + state.state});
     }
     if (index < 0 || index >= state.funfacts.length || !state.funfacts[index]) {
-        return res.status(404).json({ message: 'No Fun Fact found at the index for ' + state.state});
+        const stateLocal = data.states.find(state => state.code.toUpperCase() === stateCode);
+        return res.status(404).json({ message: 'No Fun Fact found at the index for ' + stateLocal.state});
     }
     state.funfacts[index] = funFact;
     await state.save();
