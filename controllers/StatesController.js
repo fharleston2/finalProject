@@ -189,9 +189,9 @@ const updateStateFunFact = async (req, res) => {
     let index = req.body.index;
     index = index - 1;
     console.log("updating " + index + " of stateCode: " + stateCode + " with fun fact: " + funFact);
-    if (!index) {
+     if (typeof index === 'undefined') {
         return res.status(400).json({ message: 'State fun fact index value required' });
-    }
+    } 
     if (!funFact || !(typeof funFact == "string")) {
         return res.status(400).json({ message: 'State fun fact value required' });
     }
