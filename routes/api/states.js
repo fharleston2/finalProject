@@ -23,6 +23,13 @@ router.route('/')
    .get(statesController.getContigStates); */
 
 
+router.route('/:state/funfact')
+    //.get(statesController.getStateFunFact)
+    .post(statesController.createStateFunFact)
+    //.put(statesController.updateStateFunFact)
+   // .delete(statesController.deleteStateFunFact);
+
+
 router.route('/:state/capital')
     .get(statesController.getStateCapital);
 

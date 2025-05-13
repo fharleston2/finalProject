@@ -1,4 +1,6 @@
 const { get } = require('mongoose');
+const mongooseData = require('../model/states');
+const State = mongooseData.model('State', mongooseData.stateSchema);
 
 const data = {
     states: require('../model/statesData.json'),
@@ -17,7 +19,7 @@ const getState = (req, res) => {
         
     const state = data.states.find(state => state.code.toUpperCase() === stateCode);
         if (!state) {
-            return res.status(404).json({ message: 'State not found' });
+            return res.status(404).json({ message: 'Invalid state abbreviation parameter' });
         }
         res.json(state);
 
@@ -79,6 +81,42 @@ const getStateAdmission = (req, res) => {
         admission: state.admission_date });
     }
 
+const createStateFunFact = async (req, res) => {
+    const stateCode = req.params.state.toUpperCase();
+    const funFact = req.body.funFact;
+    
+
+    if (!funFact || !Array.isArray(funFact)) {
+        return res.status(400).json({ message: 'State fun facts must be an array' });
+    }
+    
+    const state = await State.findOne({ code: stateCode }).exec();
+    if (!state) {
+        const newState = await State.create({
+             code: stateCode,
+             funfact: funFact 
+            });
+        console.log('State created successfully');
+        res.status(201).json({ newState });
+    }
+    else {
+        for (let i of funFact) {
+        state.funfact.push(i);    
+        };
+        //state.funfact.push(funFact);
+        await state.save();
+        console.log('Fun fact added successfully');
+        res.status(201).json({ state });
+    }
+    
+
+    
+
+    
+}
+
+   
+//}
 
     module.exports ={
         getAllStates,
@@ -88,5 +126,6 @@ const getStateAdmission = (req, res) => {
         getStateCapital,
         getStateNickname,
         getStatePopulation,
-        getStateAdmission
+        getStateAdmission,
+        createStateFunFact
     }
