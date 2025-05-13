@@ -66,15 +66,17 @@ const getState = async (req, res) => {
     
         const state = await State.findOne({ code: stateCode }).exec();
         if (!state) {
-            return res.status(404).json({ message: 'Invalid state abbreviation parameter' });
+            const state = data.states.find(state => state.code.toUpperCase() === stateCode);
+            return res.status(404).json({ message: 'No Fun Facts found for ' + state.state}); ;
         } else {
             if (state.funfacts.length === 0) {
                 return res.status(404).json({ message: 'No fun facts found for this state' });
             }
             console.log("getStateFunFact");
+            const randomIndex = Math.floor(Math.random() * (state.funfacts.length - 1));
             res.json({ 
                 
-                funfacts: state.funfacts });
+                funfacts: state.funfacts[randomIndex] });
         }
     }
 
