@@ -12,7 +12,7 @@ const getAllStates = (req, res) => {
         res.json(data.states);
     } 
 
-const getState = (req, res) => {
+const getState = async (req, res) => {
     const allStateCodes = data.states.map(state => state.code.toUpperCase());
    
     const stateCode = req.params.state.toUpperCase();
@@ -21,7 +21,17 @@ const getState = (req, res) => {
         if (!state) {
             return res.status(404).json({ message: 'Invalid state abbreviation parameter' });
         }
-        res.json(state);
+        const stateMongo = await State.findOne({ code: stateCode }).exec();
+        if (!stateMongo) {
+            return res.json(state);
+        }else {
+        const stateFunFact = stateMongo.funfacts;
+        const stateWithFunFact = {
+            ...state,
+            funfacts: stateFunFact
+        }   
+        res.json(stateWithFunFact);
+    }
 
         
     }
@@ -119,7 +129,7 @@ const createStateFunFact = async (req, res) => {
             });
         console.log('State created successfully');
         await newState.save();
-        res.status(201).json({ 
+        return res.status(200).json({ 
             _id: state._id,
             stateCode: state.code,
             funfacts: state.funfacts,
@@ -134,7 +144,7 @@ const createStateFunFact = async (req, res) => {
         //state.funfact.push(funFact);
         await state.save();
         console.log('Fun fact added successfully');
-        res.status(201).json({ 
+        return res.status(200).json({ 
             _id: state._id,
             stateCode: state.code,
             funfacts: state.funfacts,
