@@ -83,7 +83,7 @@ const getStateAdmission = (req, res) => {
 
 const createStateFunFact = async (req, res) => {
     const stateCode = req.params.state.toUpperCase();
-    const funFact = req.body.funFact;
+    const funFact = req.body.funfact;
     
 
     if (!funFact || !Array.isArray(funFact)) {
