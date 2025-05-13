@@ -8,9 +8,30 @@ const data = {
 };
 
 
-const getAllStates = (req, res) => {
-        res.json(data.states);
-    } 
+const getAllStates = async (req, res) => {
+    let result = [];
+    
+    const statesMongo = await State.find().exec();
+    
+        for (let i of data.states) {
+            for (let j of statesMongo) {
+                if (i.code === j.code) {
+                    let stateWithFunFact = {
+                        ...i,
+                        funfacts: j.funfacts
+                    }
+    
+         result.push(stateWithFunFact);    
+                }     
+                    else {
+        
+        }   
+            }
+            result.push(i);
+        }
+    //console.log(result);
+        res.json(result);
+}
 
 const getState = async (req, res) => {
     const allStateCodes = data.states.map(state => state.code.toUpperCase());
