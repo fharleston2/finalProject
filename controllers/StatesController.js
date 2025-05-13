@@ -63,7 +63,9 @@ const getState = async (req, res) => {
 
     const getStateFunFact = async (req, res) => {
         const stateCode = req.params.state.toUpperCase();
-    
+    if (stateCode.length !== 2 || typeof stateCode !== 'string') {
+        return res.status(400).json({ message: 'Invalid state abbreviation parameter' });
+    }
         const state = await State.findOne({ code: stateCode }).exec();
         if (!state) {
             const state = data.states.find(state => state.code.toUpperCase() === stateCode);
@@ -76,7 +78,7 @@ const getState = async (req, res) => {
             const randomIndex = Math.floor(Math.random() * (state.funfacts.length - 1));
             res.json({ 
                 
-                funfacts: state.funfacts[randomIndex] });
+                funfact: state.funfacts[randomIndex] });
         }
     }
 
@@ -187,11 +189,12 @@ const updateStateFunFact = async (req, res) => {
     const stateCode = req.params.state.toUpperCase();
     const funFact = req.body.funfact;
     let index = req.body.index;
-    index = index - 1;
+    
     console.log("updating " + index + " of stateCode: " + stateCode + " with fun fact: " + funFact);
-     if (typeof index === 'undefined') {
+     if (!index) {
         return res.status(400).json({ message: 'State fun fact index value required' });
     } 
+    index = index - 1;
     if (!funFact || !(typeof funFact == "string")) {
         return res.status(400).json({ message: 'State fun fact value required' });
     }
@@ -218,11 +221,12 @@ const updateStateFunFact = async (req, res) => {
 const deleteStateFunFact = async (req, res) => {
     const stateCode = req.params.state.toUpperCase(); 
     let index = req.body.index;
-    index = index - 1;
+   
     console.log(index + " of delete" + " stateCode: " + stateCode);
     if (!index) {
         return res.status(400).json({ message: 'State fun fact index value required' });
     }
+    index = index - 1;
     const state = await State.findOne({ code: stateCode }).exec();
     if (state.funfacts === null) {
         const stateLocal = data.states.find(state => state.code.toUpperCase() === stateCode);
