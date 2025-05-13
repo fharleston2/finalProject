@@ -136,7 +136,7 @@ const getStateAdmission = (req, res) => {
 const createStateFunFact = async (req, res) => {
     const stateCode = req.params.state.toUpperCase();
     const funFact = req.body.funfacts;
-  
+    console.log("Attempted created a state fun fact");
 
     if (!funFact) {
         return res.status(400).json({ message: 'State fun facts value required' });
@@ -161,7 +161,7 @@ const createStateFunFact = async (req, res) => {
     }
     else {
         for (let i of funFact) {
-            console.log(i);
+            console.log(i + " string to be posted");
             console.log(typeof i);
             state.funfacts.push(i);    
         };
@@ -217,11 +217,15 @@ const deleteStateFunFact = async (req, res) => {
     const stateCode = req.params.state.toUpperCase(); 
     let index = req.body.index;
     index = index - 1;
-    console.log(index + " of delete");
+    console.log(index + " of delete" + " stateCode: " + stateCode);
     if (!index) {
         return res.status(400).json({ message: 'State fun fact index value required' });
     }
     const state = await State.findOne({ code: stateCode }).exec();
+    if (state.funfacts === null) {
+        const stateLocal = data.states.find(state => state.code.toUpperCase() === stateCode);
+        return res.status(404).json({ message: 'No Fun Facts found for ' + stateLocal.state});
+    }
     if (!state.funfacts) {
         const stateLocal = data.states.find(state => state.code.toUpperCase() === stateCode);
         return res.status(404).json({ message: 'No Fun Facts found for ' + stateLocal.state});
