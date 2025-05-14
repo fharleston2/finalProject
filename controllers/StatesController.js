@@ -36,7 +36,7 @@ const getAllStates = async (req, res) => {
 }
 
 const getState = async (req, res) => {
-    const allStateCodes = data.states.map(state => state.code.toUpperCase());
+    //const allStateCodes = data.states.map(state => state.code.toUpperCase());
    
     const stateCode = req.params.state.toUpperCase();
         
@@ -63,9 +63,10 @@ const getState = async (req, res) => {
 
     const getStateFunFact = async (req, res) => {
         const stateCode = req.params.state.toUpperCase();
-    if (stateCode.length !== 2 || typeof stateCode !== 'string') {
-        return res.status(400).json({ message: 'Invalid state abbreviation parameter' });
-    }
+        const isState = data.states.find(state => state.code.toUpperCase() === stateCode);
+        if (!isState) {
+            return res.status(404).json({ message: 'Invalid state abbreviation parameter' });
+        }
         const state = await State.findOne({ code: stateCode }).exec();
         if (!state) {
             const state = data.states.find(state => state.code.toUpperCase() === stateCode);
@@ -206,7 +207,7 @@ const updateStateFunFact = async (req, res) => {
     
     if (index < 0 || index >= state.funfacts.length) {
         const stateLocal = data.states.find(state => state.code.toUpperCase() === stateCode);
-        return res.status(404).json({ message: 'No Fun Fact found at the index for ' + stateLocal.state});
+        return res.status(404).json({ message: 'No Fun Fact found at that index for ' + stateLocal.state});
     }
     if (!state.funfacts) {
         return res.status(404).json({ message: 'No Fun Facts found for ' + state.state});
@@ -228,7 +229,7 @@ const deleteStateFunFact = async (req, res) => {
     }
     index = index - 1;
     const state = await State.findOne({ code: stateCode }).exec();
-    if (state.funfacts === null) {
+    if (!state) {
         const stateLocal = data.states.find(state => state.code.toUpperCase() === stateCode);
         return res.status(404).json({ message: 'No Fun Facts found for ' + stateLocal.state});
     }
@@ -238,7 +239,7 @@ const deleteStateFunFact = async (req, res) => {
     }
     if (index < 0 || index >= state.funfacts.length || !state.funfacts[index]) {
         const stateLocal = data.states.find(state => state.code.toUpperCase() === stateCode);
-        return res.status(404).json({ message: 'No Fun Fact found at the index for ' + stateLocal.state});
+        return res.status(404).json({ message: 'No Fun Fact found at that index for ' + stateLocal.state});
     }
     state.funfacts.splice(index, 1);
     await state.save();
